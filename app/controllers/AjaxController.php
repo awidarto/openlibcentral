@@ -958,6 +958,25 @@ class AjaxController extends BaseController {
         return Response::json($result);
     }
 
+    public function getMerchant()
+    {
+        $q = Input::get('term');
+
+        $user = Merchant::where('group_id',4)
+                    ->where(function($query) use($q) {
+                        $query->where('merchantname','like','%'.$q.'%')
+                            ->orWhere('fullname','like','%'.$q.'%');
+                    })->get();
+
+        $result = array();
+
+        foreach($user->toArray() as $r){
+            $result[] = array('id'=>$r['id'],'value'=>$r['merchantname'],'email'=>$r['email'],'label'=>$r['merchantname'].' ( '.$r['email'].' )');
+        }
+
+        return Response::json($result);
+    }
+
     public function getUser()
     {
         $q = Input::get('term');

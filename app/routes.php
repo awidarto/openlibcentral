@@ -198,6 +198,18 @@ Route::get('pdf',function(){
     $html2pdf->Output('exemple.pdf','D');
 });
 
+
+Route::get('merchant',function(){
+    $q = Input::get('term');
+
+    $user = Merchant::where('group_id',4)
+                ->where(function($query) use($q) {
+                    $query->where('merchantname','like','%'.$q.'%')
+                        ->orWhere('fullname','like','%'.$q.'%');
+                })->get();
+
+    print_r($user->toArray());
+});
 /*
 Route::get('brochure/dl/{id}',function($id){
 

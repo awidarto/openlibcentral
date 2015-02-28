@@ -14,6 +14,7 @@ class AssetController extends AdminController {
 
         $this->model = new Asset();
         //$this->model = DB::collection('documents');
+        $this->title = 'Ad Asset';
 
     }
 
@@ -78,7 +79,7 @@ class AssetController extends AdminController {
 
         $asset = Asset::find($id);
 
-        Breadcrumbs::addCrumb('Assets',URL::to( strtolower($this->controller_name) ));
+        Breadcrumbs::addCrumb('Ad Assets',URL::to( strtolower($this->controller_name) ));
         Breadcrumbs::addCrumb('Detail',URL::to( strtolower($this->controller_name).'/detail/'.$asset->_id ));
         Breadcrumbs::addCrumb($asset->SKU,URL::to( strtolower($this->controller_name) ));
 
@@ -204,16 +205,9 @@ class AssetController extends AdminController {
     {
 
         $this->heads = array(
-            //array('Photos',array('search'=>false,'sort'=>false)),
-            array('Asset ID',array('search'=>true,'sort'=>true)),
-            //array('Code',array('search'=>true,'sort'=>true, 'attr'=>array('class'=>'span2'))),
             array('Picture',array('search'=>true,'sort'=>true ,'attr'=>array('class'=>'span2'))),
             array('Description',array('search'=>true,'sort'=>true)),
-            array('Type',array('search'=>true,'sort'=>true, 'select'=>Assets::getType()->TypeToSelection('type','type',true) )),
-            array('IP',array('search'=>true,'sort'=>true)),
-            array('Host Name',array('search'=>true,'sort'=>true)),
-            array('Location',array('search'=>true,'sort'=>true,'class'=>'location','select'=>Assets::getLocation()->LocationToSelection('_id','name',true) )),
-            array('Rack',array('search'=>true,'sort'=>true,'class'=>'rack','attr'=>array('class'=>'col-md-2 rack'),'select'=>Assets::getRack()->RackToSelection('_id','SKU',true) )),
+            array('Link to URL',array('search'=>true,'sort'=>true)),
             array('Tags',array('search'=>true,'sort'=>true)),
             array('Created',array('search'=>true,'sort'=>true,'datetimerange'=>true)),
             array('Last Update',array('search'=>true,'sort'=>true,'datetimerange'=>true)),
@@ -221,7 +215,7 @@ class AssetController extends AdminController {
 
         //print $this->model->where('docFormat','picture')->get()->toJSON();
 
-        $this->title = 'Asset';
+        $this->title = 'Ad Asset';
 
         $this->place_action = 'first';
 
@@ -241,16 +235,9 @@ class AssetController extends AdminController {
     {
 
         $this->fields = array(
-            //array('SKU',array('kind'=>'text','query'=>'like','pos'=>'both','callback'=>'namePic','show'=>true)),
-            array('SKU',array('kind'=>'text','query'=>'like','pos'=>'both','callback'=>'dispBar','attr'=>array('class'=>'expander'),'show'=>true)),
-            //array('SKU',array('kind'=>'text','callback'=>'dispBar', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('SKU',array('kind'=>'text', 'callback'=>'namePic', 'query'=>'like','pos'=>'both','show'=>true)),
+            array('itemDescription',array('kind'=>'text', 'callback'=>'namePic', 'query'=>'like','pos'=>'both','show'=>true)),
             array('itemDescription',array('kind'=>'text','query'=>'like','pos'=>'both','attr'=>array('class'=>'expander'),'show'=>true)),
-            array('assetType',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('IP',array('kind'=>'numeric','query'=>'like','pos'=>'both','show'=>true)),
-            array('hostName',array('kind'=>'numeric','query'=>'like','pos'=>'both','show'=>true)),
-            array('locationId',array('kind'=>'text','query'=>'like','pos'=>'both','callback'=>'locationName','show'=>true)),
-            array('rackId',array('kind'=>'text', 'query'=>'like','pos'=>'both','callback'=>'rackName','show'=>true)),
+            array('extURL',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
             array('tags',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true,'callback'=>'splitTag')),
             array('createdDate',array('kind'=>'datetimerange','query'=>'like','pos'=>'both','show'=>true)),
             array('lastUpdate',array('kind'=>'datetimerange','query'=>'like','pos'=>'both','show'=>true)),
@@ -310,8 +297,7 @@ class AssetController extends AdminController {
             $data['defaultpictures'] = '';
         }
 
-        $data['locationName'] = Assets::getLocationDetail($data['locationId'])->name;
-        $data['rackName'] = Assets::getRackDetail($data['rackId'])->SKU;
+            $data['shortcode'] = str_random(5);
 
         return $data;
     }
@@ -358,9 +344,9 @@ class AssetController extends AdminController {
             $data['defaultpic'] = '';
             $data['defaultpictures'] = '';
         }
-
-        $data['locationName'] = Assets::getLocationDetail($data['locationId'])->name;
-        $data['rackName'] = Assets::getRackDetail($data['rackId'])->SKU;
+        if(!isset($data['shortcode']) || $data['shortcode'] == ''){
+            $data['shortcode'] = str_random(5);
+        }
 
         return $data;
     }
@@ -375,7 +361,6 @@ class AssetController extends AdminController {
 
     public function afterSave($data)
     {
-        $apvticket = Assets::createApprovalRequest('new', $data['assetType'],$data['_id'], $data['_id'] );
 
         $hdata = array();
         $hdata['historyTimestamp'] = new MongoDate();
@@ -383,7 +368,6 @@ class AssetController extends AdminController {
         $hdata['historySequence'] = 0;
         $hdata['historyObjectType'] = 'asset';
         $hdata['historyObject'] = $data;
-        $hdata['approvalTicket'] = $apvticket;
         History::insert($hdata);
 
         return $data;
@@ -400,7 +384,6 @@ class AssetController extends AdminController {
         $hdata['historySequence'] = 1;
         $hdata['historyObjectType'] = 'asset';
         $hdata['historyObject'] = $data;
-        $hdata['approvalTicket'] = '';
         History::insert($hdata);
 
 
@@ -412,10 +395,7 @@ class AssetController extends AdminController {
     {
 
         $this->validator = array(
-            'SKU' => 'required|unique:SKU',
-            'locationId' => 'required',
-            'itemDescription' => 'required',
-            'rackId' => 'required',
+            'itemDescription' => 'required'
         );
 
         return parent::postAdd($data);
@@ -424,23 +404,17 @@ class AssetController extends AdminController {
     public function postEdit($id,$data = null)
     {
         $this->validator = array(
-            'SKU' => 'required',
-            'locationId' => 'required',
-            'itemDescription' => 'required',
-            'rackId' => 'required',
+            'itemDescription' => 'required'
         );
 
         $hobj = Asset::find($id)->toArray();
         $hobj['_id'] = new MongoId($id);
-
-        $apvticket = Assets::createApprovalRequest('update', $hobj['assetType'],$id, $id );
 
         $hdata['historyTimestamp'] = new MongoDate();
         $hdata['historyAction'] = 'update';
         $hdata['historySequence'] = 0;
         $hdata['historyObjectType'] = 'asset';
         $hdata['historyObject'] = $hobj;
-        $hdata['approvalTicket'] = $apvticket;
         History::insert($hdata);
 
         return parent::postEdit($id,$data);

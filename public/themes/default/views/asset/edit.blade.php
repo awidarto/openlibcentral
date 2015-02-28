@@ -1,61 +1,40 @@
 @extends('layout.fixedtwo')
 
 @section('left')
-        <h5>Device Info</h5>
-
+        <h5>Ad Asset Info</h5>
         {{ Former::hidden('id')->value($formdata['_id']) }}
 
-        {{ Former::text('SKU','Asset Code') }}
-        {{ Former::select('status')->options(array('inactive'=>'Inactive','active'=>'Active'))->label('Status') }}
-
-        {{ Former::select('assetType','Device Type')->options( Assets::getType()->TypeToSelection('type','type',true) ) }}
-
-        {{ Former::select('locationId','Location')->id('location')->options( Assets::getLocation()->LocationToSelection('_id','name',true) ) }}
-        {{ Former::select('rackId','Rack')->id('rack')->options( Assets::getRack()->RackToSelection('_id','SKU',true) ) }}
         {{ Former::text('itemDescription','Description') }}
 
-        <div class="row">
-            <div class="col-md-6">
-                <h4>Host Info</h4>
-                {{ Former::text('IP','IP Address') }}
-                {{ Former::text('hostName','Host Name') }}
-                {{ Former::text('OS','Operating System') }}
-            </div>
-            <div class="col-md-6">
-                <h4>Status</h4>
+        {{ Former::text('extURL','Link to URL') }}
 
-                {{ Former::select('powerStatus')->label('Power Status')->options(array('1'=>'Yes','0'=>'No')) }}
-                {{ Former::select('labelStatus')->label('Label Status')->options(array('1'=>'Yes','0'=>'No')) }}
-                {{ Former::select('virtualStatus')->label('Virtual Status')->options(array('1'=>'Yes','0'=>'No')) }}
-            </div>
-        </div>
+        {{ Former::select('status')->options(array('inactive'=>'Inactive','active'=>'Active'))->label('Status') }}
+
+        {{-- Former::select('assetType','Device Type')->options( Assets::getType()->TypeToSelection('type','type',true) ) --}}
+
+        <h5>Advertiser</h5>
+        {{ Former::text('merchantName','Merchant')->class('form-control auto_merchant') }}
+        {{ Former::text('merchantId','Merchant ID')->class('form-control auto_merchant')->id('merchant-id') }}
+
+        {{ Former::text('tags','Tags')->class('tag_keyword') }}
+
         {{ Form::submit('Save',array('class'=>'btn btn-primary'))}}&nbsp;&nbsp;
         {{ HTML::link($back,'Cancel',array('class'=>'btn'))}}
 
 @stop
 
 @section('right')
-        <h4>Owner & Person In Charge</h4>
-        {{ Former::text('owner','Owner') }}
 
-        {{ Former::text('PIC','Person In Charge') }}
 
-        {{ Former::text('PicPhone','PIC Phone') }}
-        {{ Former::text('PicEmail','PIC Email') }}
-
-        {{ Former::text('contractNumber','Contract Number') }}
-
-        {{ Former::text('tags','Tags')->class('tag_keyword') }}
-
-        <h5>Pictures</h5>
+        <h5>Images</h5>
         <?php
             $fupload = new Fupload();
         ?>
         {{ $fupload->id('imageupload')->title('Select Picture')->label('Upload Picture')
             ->url('upload/asset')
-            ->singlefile(false)
+            ->singlefile(true)
             ->prefix('asset')
-            ->multi(true)->make($formdata) }}
+            ->multi(false)->make($formdata) }}
 
 
 @stop
@@ -95,6 +74,13 @@ $(document).ready(function() {
         );
 
     })
+
+    $('.auto_merchant').autocomplete({
+        source: base + 'ajax/merchant',
+        select: function(event, ui){
+            $('#merchant-id').val(ui.item.id);
+        }
+    });
 
     function updateselector(data){
         var opt = '';

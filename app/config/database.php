@@ -52,7 +52,7 @@ return array(
             'port'     => 27017,
             'username' => 'assetman',
             'password' => 'hotswap',
-            'database' => 'assetman'
+            'database' => 'jayon_ad'
         ),
 
 		'sqlite' => array(
@@ -64,9 +64,9 @@ return array(
 		'mysql' => array(
 			'driver'    => 'mysql',
 			'host'      => 'localhost',
-			'database'  => 'database',
-			'username'  => 'root',
-			'password'  => '',
+			'database'  => 'jayonexpress_main',
+			'username'  => 'jayon',
+			'password'  => 'bosseddy123',
 			'charset'   => 'utf8',
 			'collation' => 'utf8_unicode_ci',
 			'prefix'    => '',

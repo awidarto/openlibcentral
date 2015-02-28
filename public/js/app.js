@@ -73,16 +73,16 @@
                 maxDate: moment().add('months',12)
             },function(start, end){
                 if ( typeof(start) !== "undefined" && start !== null && start !== '' ) {
-                    $('#fromDate').val(start.format('DD/MM/YYYY'));
-                    $('#toDate').val(end.format('DD/MM/YYYY'));
+                    $('#fromDate').val(start.format('YYYY-MM-DD'));
+                    $('#toDate').val(end.format('YYYY-MM-DD'));
                 }
             });
 
         $('.eventdate').on('show',function(ev, picker){
                 var start = $('#fromDate').val();
                 if ( typeof(start) !== "undefined" && start !== null && start !== '' && start !== 'invalid date' ) {
-                    picker.setStartDate(moment( $('#fromDate').val(), 'DD/MM/YYYY' ));
-                    picker.setEndDate(moment( $('#toDate').val(), 'DD/MM/YYYY' ));
+                    picker.setStartDate(moment( $('#fromDate').val(), 'YYYY-MM-DD' ));
+                    picker.setEndDate(moment( $('#toDate').val(), 'YYYY-MM-DD' ));
                 }else{
                     picker.setStartDate(moment());
                     picker.setEndDate(moment().add('days',3));

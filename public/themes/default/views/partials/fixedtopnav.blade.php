@@ -16,67 +16,27 @@
             @if(Ks::can('view','asset') || Ks::can('view','location') || Ks::can('view','rack') || Ks::can('view','devicetype'))
 
             <li class="dropdown  {{ sa('asset') }} {{ sa('rack') }} {{ sa('assetlocation') }} {{ sa('assettype') }} ">
-                <a href="" data-toggle="dropdown" class="dropdown-toggle" role="button" aria-expanded="false"><i class="fa fa-cubes"></i> Assets <span class="caret"></span></a>
+                <a href="" data-toggle="dropdown" class="dropdown-toggle" role="button" aria-expanded="false"><i class="fa fa-cubes"></i> Advertising Assets <span class="caret"></span></a>
                 <ul class="dropdown-menu pull-left">
 
                     @if(Ks::can('view','asset'))
 
                     <li class="{{ sa('asset') }}">
-                        <a class="{{ sa('asset') }}" href="{{ URL::to('asset') }}"  ><i class="fa fa-th-list"></i> Assets List</a>
+                        <a class="{{ sa('asset') }}" href="{{ URL::to('asset') }}"  ><i class="fa fa-th-list"></i> Ad Assets List</a>
                     </li>
 
                     @endif
 
-                    @if(Ks::can('view','rack'))
+                    @if(Ks::can('view','advertiser'))
 
-                    <li class="{{ sa('rack') }}">
-                        <a class="{{ sa('rack') }}" href="{{ URL::to('rack') }}"  ><i class="fa fa-th-list"></i> Racks</a>
+                    <li class="{{ sa('advertiser') }}">
+                        <a class="{{ sa('advertiser') }}" href="{{ URL::to('advertiser') }}"  ><i class="fa fa-th-list"></i> Advertiser</a>
                     </li>
 
-                    @endif
-
-                    @if(Ks::can('view','location'))
-
-                    <li class="{{ sa('assetlocation')}}">
-                        <a class="{{ sa('assetlocation')}}" href="{{ URL::to('assetlocation') }}" ><i class="fa fa-map-marker"></i> Locations</a>
-                    </li>
-                    @endif
-
-                    @if(Ks::can('view','devicetype'))
-
-                    <li class="{{ sa('assettype')}}">
-                        <a class="{{ sa('assettype')}}" href="{{ URL::to('assettype') }}" ><i class="fa fa-sitemap"></i> Device Type</a>
-                    </li>
                     @endif
 
                 </ul>
             </li>
-            @endif
-
-            @if(Ks::can('view','approval'))
-
-            <li class="dropdown">
-                <a href="" data-toggle="dropdown" class="dropdown-toggle" role="button" aria-expanded="false">
-                    <i class="fa fa-check-square-o"></i> Approval <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu">
-                    <li class="{{ sa('approval') }}" >
-                        <a href="{{ URL::to('approval') }}" class="{{ sa('approval') }}" ><i class="fa fa-clock-o"></i> Pending</a>
-                    </li>
-                    <li class="{{ sa('approval/verified') }}" >
-                        <a href="{{ URL::to('approval/verified') }}" class="{{ sa('approval/verified') }}" ><i class="fa fa-check-circle-o"></i> Verified</a>
-                    </li>
-                    {{--
-                    <li class="{{ sa('access') }}">
-                        <a href="{{ URL::to('access') }}" class="{{ sa('access') }}" ><i class="fa fa-edit"></i> To Be Revised</a>
-                    </li>
-                    <li class="{{ sa('apiaccess') }}">
-                        <a href="{{ URL::to('apiaccess') }}" class="{{ sa('apiaccess') }}" ><i class="fa fa-times-circle-o"></i> Rejected</a>
-                    </li>
-                    --}}
-                </ul>
-            </li>
-
             @endif
 
             @if(Ks::can('view','log'))
