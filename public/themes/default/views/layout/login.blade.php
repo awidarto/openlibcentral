@@ -27,7 +27,7 @@
       body {
         padding-top: 40px;
         padding-bottom: 40px;
-        background-color: #b60e10;
+        background-color: #388E3C;
         color: #C1C3C6
       }
 
