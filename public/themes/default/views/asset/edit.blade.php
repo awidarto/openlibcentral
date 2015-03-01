@@ -8,9 +8,28 @@
 
         {{ Former::text('extURL','Link to URL') }}
 
-        {{ Former::select('status')->options(array('inactive'=>'Inactive','active'=>'Active'))->label('Status') }}
+        {{ Former::select('status')->options(array('inactive'=>'Inactive','active'=>'Active','scheduled'=>'Scheduled'))->label('Status') }}
 
         {{-- Former::select('assetType','Device Type')->options( Assets::getType()->TypeToSelection('type','type',true) ) --}}
+        <div class="row">
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                {{ Former::text('fromDate','From')->class('form-control eventdate')
+                    ->id('fromDate')
+                    //->data_format('dd-mm-yyyy')
+                    ->append('<i class="fa fa-th"></i>') }}
+            </div>
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                {{ Former::text('toDate','Until')->class('form-control eventdate')
+                    ->id('toDate')
+                    //->data_format('dd-mm-yyyy')
+                    ->append('<i class="fa fa-th"></i>') }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                {{ Former::select('isDefault')->options(array('yes'=>'Yes','no'=>'No'))->label('Set As Default Ad') }}
+            </div>
+        </div>
 
         <h5>Advertiser</h5>
         {{ Former::text('merchantName','Merchant')->class('form-control auto_merchant') }}

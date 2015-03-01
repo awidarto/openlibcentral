@@ -25,6 +25,11 @@
                     ->append('<i class="fa fa-th"></i>') }}
             </div>
         </div>
+        <div class="row">
+            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                {{ Former::select('isDefault')->options(array('yes'=>'Yes','no'=>'No'))->label('Set As Default Ad') }}
+            </div>
+        </div>
 
         <h5>Advertiser</h5>
         {{ Former::text('merchantName','Merchant')->class('form-control auto_merchant') }}

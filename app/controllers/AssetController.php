@@ -205,7 +205,9 @@ class AssetController extends AdminController {
     {
 
         $this->heads = array(
-            array('Picture',array('search'=>true,'sort'=>true ,'attr'=>array('class'=>'span2'))),
+            array('Merchant',array('search'=>true,'sort'=>true ,'attr'=>array('class'=>'span2'))),
+            array('Merchant ID',array('search'=>true,'sort'=>true ,'attr'=>array('class'=>'span2'))),
+            array('Banner',array('search'=>true,'sort'=>true ,'attr'=>array('class'=>'span2'))),
             array('Description',array('search'=>true,'sort'=>true)),
             array('Link to URL',array('search'=>true,'sort'=>true)),
             array('Tags',array('search'=>true,'sort'=>true)),
@@ -235,6 +237,8 @@ class AssetController extends AdminController {
     {
 
         $this->fields = array(
+            array('merchantName',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
+            array('merchantId',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
             array('itemDescription',array('kind'=>'text', 'callback'=>'namePic', 'query'=>'like','pos'=>'both','show'=>true)),
             array('itemDescription',array('kind'=>'text','query'=>'like','pos'=>'both','attr'=>array('class'=>'expander'),'show'=>true)),
             array('extURL',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
@@ -607,6 +611,9 @@ class AssetController extends AdminController {
 
         $thumbnail_url = '';
 
+        $ps = Config::get('picture.sizes');
+
+
         if(isset($data['files']) && count($data['files'])){
             $glinks = '';
 
@@ -616,7 +623,11 @@ class AssetController extends AdminController {
             foreach($data['files'] as $g){
                 $g['caption'] = ( isset($g['caption']) && $g['caption'] != '')?$g['caption']:$data['SKU'];
                 $g['full_url'] = isset($g['full_url'])?$g['full_url']:$g['fileurl'];
-                $glinks .= '<input type="hidden" class="g_'.$data['_id'].'" data-caption="'.$g['caption'].'" value="'.$g['full_url'].'" >';
+                foreach($ps as $k=>$s){
+                    if(isset($g[$k.'_url'])){
+                        $glinks .= '<input type="hidden" class="g_'.$data['_id'].'" data-caption="'.$k.'" value="'.$g[$k.'_url'].'" />';
+                    }
+                }
             }
 
             $display = HTML::image($thumbnail_url.'?'.time(), $thumbnail_url, array('class'=>'thumbnail img-polaroid','style'=>'cursor:pointer;','id' => $data['_id'])).$glinks;
