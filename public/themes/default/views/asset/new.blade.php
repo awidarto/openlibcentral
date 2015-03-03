@@ -32,7 +32,7 @@
         </div>
 
         <h5>Advertiser</h5>
-        {{ Former::text('merchantName','Merchant')->class('form-control auto_merchant') }}
+        {{ Former::text('merchantName','Merchant')->class('form-control auto_merchant')->help('autocomplete, use to get merchant ID') }}
         {{ Former::text('merchantId','Merchant ID')->class('form-control auto_merchant')->id('merchant-id') }}
 
         {{ Former::text('tags','Tags')->class('tag_keyword') }}
